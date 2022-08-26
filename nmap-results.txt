@@ -1,0 +1,51 @@
+25465/tcp open  unknown   syn-ack ttl 48
+25565/tcp open  minecraft syn-ack ttl 49
+25570/tcp open  unknown   syn-ack ttl 48
+25571/tcp open  unknown   syn-ack ttl 48
+25574/tcp open  unknown   syn-ack ttl 47
+25575/tcp open  unknown   syn-ack ttl 47
+25580/tcp open  unknown   syn-ack ttl 49
+25585/tcp open  unknown   syn-ack ttl 48
+25586/tcp open  unknown   syn-ack ttl 47
+25587/tcp open  unknown   syn-ack ttl 48
+25589/tcp open  unknown   syn-ack ttl 48
+25591/tcp open  unknown   syn-ack ttl 47
+25601/tcp open  unknown   syn-ack ttl 47
+25602/tcp open  unknown   syn-ack ttl 48
+25612/tcp open  unknown   syn-ack ttl 48
+25613/tcp open  unknown   syn-ack ttl 47
+25616/tcp open  unknown   syn-ack ttl 47
+25617/tcp open  unknown   syn-ack ttl 48
+25620/tcp open  unknown   syn-ack ttl 48
+25622/tcp open  unknown   syn-ack ttl 48
+25624/tcp open  unknown   syn-ack ttl 47
+25627/tcp open  unknown   syn-ack ttl 48
+25630/tcp open  unknown   syn-ack ttl 47
+25648/tcp open  unknown   syn-ack ttl 49
+25652/tcp open  unknown   syn-ack ttl 48
+
+'54.39.68.58:25465',
+'54.39.68.58:25565',
+'54.39.68.58:25570',
+'54.39.68.58:25571',
+'54.39.68.58:25574',
+'54.39.68.58:25575',
+'54.39.68.58:25580',
+'54.39.68.58:25585',
+'54.39.68.58:25586',
+'54.39.68.58:25587',
+'54.39.68.58:25589',
+'54.39.68.58:25591',
+'54.39.68.58:25601',
+'54.39.68.58:25602',
+'54.39.68.58:25612',
+'54.39.68.58:25613',
+'54.39.68.58:25616',
+'54.39.68.58:25617',
+'54.39.68.58:25620',
+'54.39.68.58:25622',
+'54.39.68.58:25624',
+'54.39.68.58:25627',
+'54.39.68.58:25630',
+'54.39.68.58:25648',
+'54.39.68.58:25652'
