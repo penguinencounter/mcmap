@@ -29,13 +29,37 @@ def process_exclusions(subnet: ipaddress.IPv4Network, exclusions: typing.List[st
 
 
 def dump_block(block: typing.List[ipaddress.IPv4Address], filename: str):
-    with open(filename, 'w') as f:
+    with open(filename, 'wb') as f:
         for addr in block:
-            f.write(f'{addr.packed}')
+            f.write(addr.packed + b' ')
+
+
+def compress(block: typing.List[ipaddress.IPv4Address]) -> typing.List[ipaddress.IPv4Network]:
+    print(f'\rconverting addresses to networks...'.ljust(100), end='', flush=True)
+    subnets: typing.List[ipaddress.IPv4Network] = [ipaddress.ip_network((addr, 32), False) for addr in block]
+
+    for mask in range(31, -1, -1):
+        print(f'\rcompressing subnets ({32 - mask}/32)...'.ljust(100), end='', flush=True)
+
+        # sort the subnets by their first address
+        subnets.sort(key=lambda x: x.network_address.packed)
+        # merge subnets together if they are contiguous
+        merged = []
+        # take pairs
+        for i in range(0, len(subnets), 2):
+            # if the first subnet is contiguous with the next one, merge them
+            if i + 1 < len(subnets) and subnets[i].broadcast_address + 1 == subnets[i + 1].network_address:
+                merged.append(ipaddress.ip_network((subnets[i].network_address, mask), False))
+            else:
+                merged.append(subnets[i])
+                if i + 1 < len(subnets):
+                    merged.append(subnets[i + 1])
+        subnets = merged
+    return subnets
 
 
 def split_block(subnets: typing.List[ipaddress.IPv4Network], target_mask: int = 24) -> typing.List[
-    typing.List[ipaddress.IPv4Address]]:
+                typing.List[ipaddress.IPv4Address]]:
     """Split a list of subnets into smaller blocks, based on the target mask"""
     building = []
     addr_count = 2 ** (32 - target_mask)
@@ -60,8 +84,9 @@ def split_block(subnets: typing.List[ipaddress.IPv4Network], target_mask: int = 
                     eta.step()
                     blocks_done += 1
                     rem = estimated_steps - blocks_done
-                    print(f'\rBlock splitter: about {round(total_done / total_estimate * 100, 2)}% done;'
-                          f' Estimated {eta.get(rem)} remaining', end='', flush=True)
+                    print(f'\rabout {round(total_done / total_estimate * 100, 2)}% done;'
+                          f' Estimated {eta.get(rem)} remaining (done {blocks_done} -> {total_done}) (currently in {net})'.ljust(100),
+                          end='', flush=True)
                     yield building
                     building = []
                 building.append(host)
@@ -79,7 +104,19 @@ STRATEGIES = {
 }
 
 
-def build_blocks():
+def write_progress_backup(data: int):
+    with open('continue.bak', 'w') as f:
+        f.write(str(data))
+
+
+def read_progress_backup() -> int:
+    if os.path.exists('continue.bak'):
+        with open('continue.bak', 'r') as f:
+            return int(f.read())
+    return 0
+
+
+def build_blocks(backup_between: int = 50, continuation: int = 0):
     conf = load_config()
     target = ipaddress.ip_network(conf['target'], False)
     block_mask = conf['block_mask']
@@ -96,11 +133,23 @@ def build_blocks():
     if not os.path.exists('blocks'):
         os.mkdir('blocks')
 
+    ctr = 0
+
     next(blocks)  # buffer
+    if continuation > 0:
+        print(f'fast-forward {continuation} blocks')
+    for _ in range(continuation):
+        next(blocks)  # and discard
+        ctr += 1
+
+    print(f'\nstarting...')
     for i, a in enumerate(blocks):
-        # print(i+1, len(a))
-        dump_block(a, f'blocks/{i}.block')
+        ctr += 1
+        if ctr % backup_between == 0:
+            write_progress_backup(i)
+        print("\n", compress(a))
 
 
 if __name__ == '__main__':
-    build_blocks()
+    prog = read_progress_backup()
+    build_blocks(continuation=prog)

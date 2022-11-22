@@ -78,11 +78,11 @@ if __name__ == '__main__':
     #     # '54.39.68.58:25648',
     #     '54.39.68.58:25652'
     # ]
-    print('loading data...', flush=True)
-    with open('all_addrs.json') as f:
-        test = json.load(f)
-    # test = ['54.252.193.28:25565']
+    # print('loading data...', flush=True)
+    # with open('all_addrs.json') as f:
+    #     test = json.load(f)
+    test = ['51.68.204.29:25606']
     results = pack.bulk_req_status(test, 1000)
 
-    with open('results.html', 'w', encoding='utf-8') as f:
+    with open('results2.html', 'w', encoding='utf-8') as f:
         f.write(build(results, False))
