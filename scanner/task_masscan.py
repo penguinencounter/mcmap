@@ -176,10 +176,7 @@ def build_blocks(backup_between: int = 50, continuation: int = 0):
     strategy = STRATEGIES[conf['blocking_strategy']]
     print(f'Using strategy: {conf["blocking_strategy"]}')
     blocks = strategy(frags, block_mask)
-    next(blocks)
-    for i, v in enumerate(blocks):
-        print(f'\r{i}, {sum(map(lambda x: x.num_addresses, v))}'.ljust(50), end='', flush=True)
-    return
+
     if not os.path.exists('tasks'):
         os.mkdir('tasks')
 
